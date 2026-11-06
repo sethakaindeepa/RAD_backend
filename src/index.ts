@@ -1,15 +1,15 @@
+import "dotenv/config";
 import dns from "node:dns";
-
 dns.setServers(["8.8.8.8"]);
 
 import express from "express";
 import cors from "cors";
-import dotenv from "dotenv";
+
 import mongoose from "mongoose";
 
 import productRoutes from "./routes/product.routers";
+import AuthRouter from "./routes/auth.routers"
 
-dotenv.config();
 
 const app = express();
 
@@ -40,7 +40,7 @@ app.get("/api/health", (_req, res) => {
 
 
 app.use("/api/products", productRoutes);
-
+app.use("/api/v1/auth", AuthRouter)
 
 
 async function startServer() {

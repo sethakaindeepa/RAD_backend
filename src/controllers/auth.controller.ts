@@ -30,3 +30,36 @@ export const register = async (req: Request, res: Response) => {
     }
 }
 
+export const login = async (req:Request, res:Response)=>{
+     const {email, password} = req.body
+
+     if (!email || !password){
+        return res.status(400).json({message: "Missing credentials"})
+     }
+
+     try{
+        const user = await UserModel.findOne({ email })
+        if (!user){
+            return res.status(401).json({message: "Invalid credentials" })
+        }
+
+        const isValid = await bcrypt.compare(password, user.password)
+        if (!isValid) {
+            return res.status(401).json({message: "Invalid credentials"})
+        }
+
+        res.status(200).json({
+            message: "OK",
+            data: {
+                email: user.email,
+                roles: user.roles,
+                access_token: signAccessToken(user),
+                refresh_token: signRefreshToken(user)
+            }
+        })
+     }catch (err){
+        
+        res.status(500).json({message: "Internal server error"})
+     }
+}
+
