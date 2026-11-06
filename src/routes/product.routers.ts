@@ -1,39 +1,29 @@
-import {Router} from "express"
-import Product from "../models/product.model"
 
-const router = Router()
+import express from "express";
 
-router.get("/", async (_req, res) => {
-    try{
-        const products = await Product.find({ isActive:true });
-        res.status(200).json({
-            success: true,
-            count: products.length,
-            data: products
-        });
-    }catch (error){
-        res.status(500).json({
-            success: false,
-            message: "Failed to retrieve products"
-        });
-    }
-});
+import {
+  createProduct,
+  getAllProducts,
+  getProductById,
+  updateProduct,
+  deleteProduct
+} from "../controllers/product.controller";
 
-router.post("/", async (req, res) => {
-    try{
-        const product = await Product.create(req.body);
+const router = express.Router();
 
-        res.status(201).json({
-            success: true,
-            message: "Toy added successfully",
-            data: product,
-        })
-    }catch (error){
-        res.status(400).json({
-            success: false,
-            message: "Failed to add toy. Check the provided data."
-        });
-    }
-});
+
+router.post("/", createProduct);
+
+
+router.get("/", getAllProducts);
+
+
+router.get("/:id", getProductById);
+
+
+router.put("/:id", updateProduct);
+
+
+router.delete("/:id", deleteProduct);
 
 export default router;

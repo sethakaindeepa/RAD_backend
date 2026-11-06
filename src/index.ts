@@ -1,21 +1,33 @@
 import dns from "node:dns";
 
 dns.setServers(["8.8.8.8"]);
+
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-import { connectDB } from "./config/db";
+import mongoose from "mongoose";
+
 import productRoutes from "./routes/product.routers";
+
 dotenv.config();
 
 const app = express();
-const PORT = Number(process.env.PORT) || 5000;
+
+const PORT = Number(process.env.PORT) || 3000;
+const MONGO_URL = process.env.MONGO_URL;
+
+
 
 app.use(cors());
 app.use(express.json());
 
+
+
+
 app.get("/", (_req, res) => {
-  res.json({ message: "Welcome to the ToyLand API!" });
+  res.json({
+    message: "Welcome to the ToyLand API!",
+  });
 });
 
 app.get("/api/health", (_req, res) => {
@@ -25,17 +37,33 @@ app.get("/api/health", (_req, res) => {
   });
 });
 
+
+
 app.use("/api/products", productRoutes);
+
+
 
 async function startServer() {
   try {
-    await connectDB();
+   
+    if (!MONGO_URL) {
+      throw new Error("MONGO_URL is not defined in .env");
+    }
 
+    
+    await mongoose.connect(MONGO_URL);
+
+    console.log("DB connected..!");
+
+    
     app.listen(PORT, () => {
-      console.log(`ToyLand server running at http://localhost:${PORT}`);
+      console.log(
+        `Server is running on http://localhost:${PORT}`
+      );
     });
+
   } catch (error) {
-    console.error("Failed to start server:", error);
+    console.error("Failed to connect DB:", error);
     process.exit(1);
   }
 }
