@@ -63,3 +63,40 @@ export const login = async (req:Request, res:Response)=>{
      }
 }
 
+export const getMyDetails = async (req: AuthRequest, res:Response) => {
+    if (!req.user?.sub) return res.status(401).json({message: "Unauthorized"})
+
+        try{
+            const user = await UserModel.findById(req.user.sub).select("-password")
+            if (!user) return res.status(404).json({ message:"User not found"})
+
+            res.status(200).json({
+                message: "ok",
+                data: {
+                    id: user._id,
+                    name: user.name,
+                    email: user.email,
+                    roles: user.roles
+                }
+            })    
+        }catch(err){
+            res.status(500).json({ message: "Internal server error"})
+        }
+}
+
+export const getRefreshToken = async (req: Request, res: Response) => {
+    const { refreshToken } = req.body
+    if (!refreshToken) return res.status(400).json({ message: "Token required" })
+
+        try{
+            const payload = verifyRefreshToken(refreshToken)
+            const user = await UserModel.findById(payload.sub)
+
+            if (!user) return res.status(403).json({ message: "Invalid token"})
+
+            res.status(200).json({ data: {accessToken: signAccessToken(user) }})    
+        }catch(err){
+            res.status(403).json({ message: "Invalid or expired token"})
+        }
+}
+
