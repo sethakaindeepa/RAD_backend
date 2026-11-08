@@ -1,7 +1,7 @@
 
 import { Request, Response } from "express";
 import mongoose from "mongoose";
-import Product from "../models/product.model";
+import {ProductModel} from "../models/product.model";
 
 
 
@@ -16,7 +16,7 @@ export const createProduct = async (req: Request,res: Response): Promise<void> =
       return;
     }
  
-    const newProduct = new Product({name,description,price,category,stock,image});
+    const newProduct = new ProductModel({name,description,price,category,stock,image});
       const savedProduct = await newProduct.save();
 
       res.status(201).json({
@@ -35,7 +35,7 @@ export const createProduct = async (req: Request,res: Response): Promise<void> =
       
 export const getAllProducts = async (req: Request,res: Response): Promise<void> => {
       try {
-    const products = await Product.find()
+    const products = await ProductModel.find()
       .sort({ createdAt: -1 });
 
     res.status(200).json({
@@ -66,7 +66,7 @@ export const getProductById = async (req: Request, res: Response): Promise<void>
       return;
     }
     
-    const product = await Product.findById(id);
+    const product = await ProductModel.findById(id);
 
     if (!product) {
       res.status(404).json({
@@ -118,7 +118,7 @@ export const updateProduct = async (req: Request, res: Response): Promise<void> 
     }
       
       
-    const updatedProduct = await Product.findByIdAndUpdate(
+    const updatedProduct = await ProductModel.findByIdAndUpdate(
       id,
       { $set: updateData },
       {
@@ -160,7 +160,7 @@ export const deleteProduct = async (req: Request,res: Response): Promise<void> =
                 });
                 return;
               }
-            const deletedProduct = await Product.findByIdAndUpdate(
+            const deletedProduct = await ProductModel.findByIdAndUpdate(
              id,
             { isActive: false },
             { new: true }
