@@ -2,10 +2,8 @@ import { Request, Response } from "express";
 import { OrderModel } from "../models/order.model";
 import { ProductModel } from "../models/product.model";
 
-export const createOrder = async (
-  req: Request,
-  res: Response
-) => {
+export const createOrder = async (req: Request,res: Response) => {
+  
   try {
     const { items, paymentMethod, shippingAddress } = req.body;
 
@@ -67,7 +65,7 @@ export const createOrder = async (
 
       totalAmount += subtotal;
 
-      // Reduce stock
+     
       product.stock -= item.quantity;
       await product.save();
     }
@@ -95,3 +93,61 @@ export const createOrder = async (
     });
   }
 };
+  
+
+
+export const getMyOrders = async (req: Request,res: Response) => {
+  try {
+    const userId = (req as any).user.sub;
+
+    const orders = await OrderModel
+      .find({ userId })
+      .sort({ createdAt: -1 });
+
+    return res.status(200).json({
+      message: "Orders retrieved successfully",
+      orders,
+    });
+
+  } catch (error) {
+    console.error(error);
+
+    return res.status(500).json({
+      message: "Failed to retrieve orders",
+    });
+  }
+};
+  
+
+  
+
+export const getOrderById = async (req: Request,res: Response) => {
+  try {
+    const userId = (req as any).user.sub;
+    const { id } = req.params;
+
+    const order = await OrderModel.findOne({
+      _id: id,
+      userId,
+    });
+
+    if (!order) {
+      return res.status(404).json({
+        message: "Order not found",
+      });
+    }
+
+    return res.status(200).json({
+      message: "Order retrieved successfully",
+      order,
+    });
+
+  } catch (error) {
+    return res.status(500).json({
+      message: "Failed to retrieve order",
+    });
+  }
+};
+  
+
+ 

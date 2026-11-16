@@ -35,8 +35,9 @@ export const createProduct = async (req: Request,res: Response): Promise<void> =
       
 export const getAllProducts = async (req: Request,res: Response): Promise<void> => {
       try {
-    const products = await ProductModel.find()
-      .sort({ createdAt: -1 });
+    const products = await ProductModel.find({
+      isActive: true,
+    });
 
     res.status(200).json({
       message: "Products retrieved successfully",
@@ -188,7 +189,26 @@ export const deleteProduct = async (req: Request,res: Response): Promise<void> =
             }
             };
 
-     
+     export const getActiveProducts = async (req: Request,res: Response) => {
+     try {
+         const products = await ProductModel.find({
+        isActive: true,
+        });
+
+        res.status(200).json({
+        success: true,
+        data: products,
+        });
+        } catch (error) {
+        res.status(500).json({
+        success: false,
+        message: "Failed to fetch active products",
+        });
+     }
+};
+  
+
+  
 
     
     
