@@ -10,6 +10,7 @@ import mongoose from "mongoose";
 import productRoutes from "./routes/product.routers";
 import AuthRouter from "./routes/auth.routers"
 import OrderRouter from "./routes/order.routers";
+import uploadRoutes from "./routes/upload.routers";
 
 const app = express();
 
@@ -42,6 +43,7 @@ app.get("/api/health", (_req, res) => {
 app.use("/api/v1/products", productRoutes);
 app.use("/api/v1/auth", AuthRouter)
 app.use("/api/v1/orders", OrderRouter);
+app.use("/api/v1/uploads", uploadRoutes);
 
 async function startServer() {
   try {

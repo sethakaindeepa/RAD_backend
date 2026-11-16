@@ -22,20 +22,17 @@ router.post("/",
   createProduct);
 
 
-router.get("/",
-  authenticate,
-  requireRole([UserRole.ADMIN,UserRole.CUSTOMER]), 
-  getAllProducts);
+router.get("/",getAllProducts);
+  
+  
 
-router.get("/active",
-  authenticate,
-  requireRole([UserRole.ADMIN,UserRole.CUSTOMER]),
-  getActiveProducts);
+router.get("/active",getActiveProducts);
+  
+  
 
-router.get("/:id",
-  authenticate,
-  requireRole([UserRole.ADMIN,UserRole.CUSTOMER]),
-  getProductById);
+router.get("/:id",getProductById);
+  
+  
 
 
 router.put("/:id",
