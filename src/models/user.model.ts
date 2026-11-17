@@ -21,7 +21,7 @@ const userSchema = new Schema<IUser>(
         roles: {
             type: [String],
             enum: Object.values(UserRole),
-            default: [UserRole.ADMIN]
+            default: [UserRole.CUSTOMER]
         },
         approve: {type: Boolean, default: false}
     },

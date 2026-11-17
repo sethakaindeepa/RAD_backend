@@ -11,7 +11,7 @@ import productRoutes from "./routes/product.routers";
 import AuthRouter from "./routes/auth.routers"
 import OrderRouter from "./routes/order.routers";
 import uploadRoutes from "./routes/upload.routers";
-
+import chatRoutes from "./routes/chat.routers";
 const app = express();
 
 const PORT = Number(process.env.PORT) || 3000;
@@ -44,6 +44,7 @@ app.use("/api/v1/products", productRoutes);
 app.use("/api/v1/auth", AuthRouter)
 app.use("/api/v1/orders", OrderRouter);
 app.use("/api/v1/uploads", uploadRoutes);
+app.use("/api/v1/chat", chatRoutes);
 
 async function startServer() {
   try {
